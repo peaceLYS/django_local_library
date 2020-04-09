@@ -1,0 +1,32 @@
+from django.urls import path
+from django.conf.urls import include
+#Add URL maps to redirect the base URL to our application
+from django.contrib.admin.views.decorators import staff_member_required
+from catalog import views
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('books/', views.BookListView.as_view(), name='books'),
+    path('book/<int:pk>', views.BookDetailView.as_view(), name='book-detail'),
+    path('authors/', views.AuthorView, name='authors'),
+    path('author/<int:pk>', views.AuthorDetailView.as_view(), name='author-detail'),
+]
+urlpatterns += [
+    path('mybooks/', views.LoanedBooksByUserListView.as_view(), name='my-borrowed'),
+]
+urlpatterns += [
+    path('borrowed/', staff_member_required(views.LoanedBooksByAllUserListView.as_view()), name='all-borrowed'),
+]
+urlpatterns += [
+    path('book/<uuid:pk>/renew/', views.renew_book_librarian, name='renew-book-librarian'),
+]
+urlpatterns += [
+    path('author/create/', views.AuthorCreate.as_view(), name='author_create'),
+    path('author/<int:pk>/update/', views.AuthorUpdate.as_view(), name='author_update'),
+    path('author/<int:pk>/delete/', views.AuthorDelete.as_view(), name='author_delete'),
+]
+
+urlpatterns += [
+    path('books/create/', views.BookCreate.as_view(), name='book_create'),
+    path('books/<int:pk>/update/', views.BookUpdate.as_view(), name='book_update'),
+    path('books/<int:pk>/delete/', views.BookDelete.as_view(), name='book_delete'),
+]
